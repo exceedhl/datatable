@@ -1,0 +1,12 @@
+- [x] 增加和删除行
+- [x] 改变列宽度和顺序，隐藏列
+- [x] conditional highlight，需要在header控制区域也显示配置
+- [x] 自动列宽
+- [x] 持久化filter/group/列宽/列隐藏/col freeze/conditional highlight配置
+- [x] 鼠标方向键切换cell
+- [x] number类型支持数字位数显示设置（小数点，千分位），货币显示
+- [x] col freeze
+- [x] 公式计算列，支持引用其他列做简单四则运算，同时列tooltip显示具体计算公式
+- [ ] 行数据用户权限控制
+- [ ] 如何处理后续列的migrate问题
+- [x] bug: 分组后列标题和分组内数据不能对齐，因为group有一个左gap，当显示分组的时候，标题也应该对应有gap，例如显示三层group的时候，标题应该有二三层group的gap加起来
