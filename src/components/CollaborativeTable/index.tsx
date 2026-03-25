@@ -240,15 +240,26 @@ export default function CollaborativeTable({ room, currentUser, columns: colDefs
     return withCards;
   }, [groups, rows, collapsed]);
 
-  // Keyboard navigation
+  // Keyboard navigation — precompute O(1) lookup map
+  const rowIdToIndex = useMemo(() => {
+    const map = new Map<string, number>();
+    for (let i = 0; i < vItems.length; i++) {
+      const item = vItems[i];
+      if (item.type === 'row' && item.row?.original?._id) {
+        map.set(item.row.original._id, i);
+      }
+    }
+    return map;
+  }, [vItems]);
+
   const getRowId = useCallback((rowIndex: number): string | null => {
     const item = vItems[rowIndex];
     return item?.row?.original?._id ?? null;
   }, [vItems]);
 
   const getRowIndex = useCallback((rowId: string): number => {
-    return vItems.findIndex(v => v.type === 'row' && v.row?.original?._id === rowId);
-  }, [vItems]);
+    return rowIdToIndex.get(rowId) ?? -1;
+  }, [rowIdToIndex]);
 
   const isPlaceholderRow = useCallback((rowIndex: number): boolean => {
     const item = vItems[rowIndex];
@@ -273,6 +284,7 @@ export default function CollaborativeTable({ room, currentUser, columns: colDefs
     getRowIndex,
     scrollToIndex: (idx) => virtualizer.scrollToIndex(idx, { align: 'auto' }),
     isPlaceholderRow,
+    refocusTable: () => tableRef.current?.focus(),
   });
 
   // DT-C8: Row operations
