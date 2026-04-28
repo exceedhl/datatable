@@ -415,8 +415,8 @@ export default function CollaborativeTable({ room, currentUser, columns: colDefs
   // --- Shared render helpers ---
   const renderEnumBadge = (enumOpt: any, size: 'sm' | 'xs' = 'sm') => (
     <Badge variant="secondary"
-      className={size === 'sm' ? 'text-[11px]' : 'text-[10px]'}
-      style={enumOpt.color ? { backgroundColor: enumOpt.color, color: parseInt(enumOpt.color.slice(1), 16) < 0x888888 ? '#fff' : '#1e293b' } : {}}
+      className={size === 'sm' ? 'text-[10px] font-bold tracking-widest uppercase px-1.5 py-0 border-0' : 'text-[10px] font-bold tracking-wider uppercase px-1 py-0 border-0'}
+      style={(enumOpt.color && enumOpt.color.startsWith('var(')) ? { backgroundColor: `oklch(${enumOpt.color} / 0.15)`, color: `oklch(${enumOpt.color})` } : {}}
     >
       {enumOpt.label}
     </Badge>
@@ -484,34 +484,35 @@ export default function CollaborativeTable({ room, currentUser, columns: colDefs
 
   return (
     <div ref={tableRef} className="flex flex-col h-full bg-background relative" tabIndex={0} onKeyDown={handleKeyDown} style={{ outline: 'none' }}>
-      {/* Toolbar */}
-      <div className="px-4 py-2.5 border-b flex items-center gap-3 shrink-0 z-30 bg-background flex-wrap">
+      {/* Extracted Compact Toolbar Row */}
+      <div className="px-3 py-1.5 border-b shadow-sm flex items-center gap-2 shrink-0 z-30 bg-muted/30 flex-wrap relative">
         <FilterPanel columns={colDefs} filters={filters} onFiltersChange={setFilters} />
-        <div className="w-px h-5 bg-border" />
+        <div className="w-px h-4 bg-border/50 mx-1" />
         <GroupToolbar columns={colDefs} grouping={grouping} onGroupingChange={setGrouping} />
-        <div className="w-px h-5 bg-border" />
+        <div className="w-px h-4 bg-border/50 mx-1" />
         <ConditionalFormatPanel columns={colDefs} rules={conditionalRules} onRulesChange={setConditionalRules} />
-        <div className="w-px h-5 bg-border" />
+        <div className="w-px h-4 bg-border/50 mx-1" />
         <ColumnManager
           columns={colDefs}
           columnVisibility={columnVisibility}
           onColumnVisibilityChange={setColumnVisibility}
           onAutoFitAll={handleAutoFitAll}
         />
-        <div className="w-px h-5 bg-border" />
-        <Button variant="outline" size="sm" className="gap-1.5" onClick={() => handleAddRow()}>
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
-          添加行
-        </Button>
-
-        <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground">
-          <Button variant="ghost" size="sm" className="text-xs h-7 px-2 text-muted-foreground" onClick={handleResetView}>
+        
+        <div className="ml-auto flex items-center gap-3">
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-medium border-r pr-3">
+            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />{room}
+            <span className="bg-background border px-1.5 py-0.5 rounded shadow-sm tabular-nums ml-2">{filtered.length.toLocaleString()} 行</span>
+          </div>
+          
+          <Button variant="ghost" size="sm" className="text-xs h-7 px-2 hover:bg-accent/50 text-muted-foreground" onClick={handleResetView}>
             重置视图
           </Button>
-          <Badge variant="outline" className="gap-1.5 text-xs">
-            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />{room}
-          </Badge>
-          <span className="text-xs bg-muted px-2 py-0.5 rounded tabular-nums">{filtered.length.toLocaleString()} 行</span>
+
+          <Button variant="default" size="sm" className="gap-1.5 h-7 rounded bg-primary hover:bg-primary/90 text-primary-foreground border-0 shadow-none font-medium px-3" onClick={() => handleAddRow()}>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" /></svg>
+            添加行
+          </Button>
         </div>
       </div>
 
@@ -535,7 +536,7 @@ export default function CollaborativeTable({ room, currentUser, columns: colDefs
                   <ContextMenu key={header.id}>
                     <ContextMenuTrigger asChild>
                       <div
-                        className={`px-4 py-2.5 text-xs font-semibold text-muted-foreground whitespace-nowrap relative bg-background ${lastFrozen ? 'border-r-2 border-primary/20' : ''}`}
+                        className={`px-4 py-2.5 text-xs font-semibold whitespace-nowrap relative transition-colors ${header.column.getIsSorted() ? 'text-primary bg-primary/[0.03]' : 'text-muted-foreground bg-background'} ${lastFrozen ? 'border-r-2 border-primary/20' : ''}`}
                         style={frozen}
                       >
                         <div className="flex items-center gap-1.5">

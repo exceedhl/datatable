@@ -4,9 +4,9 @@ import CollaborativeTable from './components/CollaborativeTable'
 import type { DataColumnDef } from './components/CollaborativeTable/types'
 
 const MOCK_USERS = [
-  { id: '1', name: 'Alana', color: '#f87171' },
-  { id: '2', name: 'Bob', color: '#60a5fa' },
-  { id: '3', name: 'Charlie', color: '#34d399' },
+  { id: '1', name: 'Alana', color: 'oklch(var(--chart-1))' },
+  { id: '2', name: 'Bob', color: 'oklch(var(--chart-2))' },
+  { id: '3', name: 'Charlie', color: 'oklch(var(--chart-3))' },
 ]
 
 const DEMO_COLUMNS: DataColumnDef[] = [
@@ -30,11 +30,11 @@ const DEMO_COLUMNS: DataColumnDef[] = [
     type: 'enum',
     width: 100,
     enumOptions: [
-      { label: '工程', value: '工程', color: '#e0f2fe' },
-      { label: '产品', value: '产品', color: '#f3e8ff' },
-      { label: '设计', value: '设计', color: '#fce7f3' },
-      { label: '运营', value: '运营', color: '#ccfbf1' },
-      { label: '市场', value: '市场', color: '#ffedd5' },
+      { label: '工程', value: '工程', color: 'var(--chart-1)' },
+      { label: '产品', value: '产品', color: 'var(--chart-2)' },
+      { label: '设计', value: '设计', color: 'var(--chart-3)' },
+      { label: '运营', value: '运营', color: 'var(--chart-4)' },
+      { label: '市场', value: '市场', color: 'var(--chart-5)' },
     ],
     groupable: true,
   },
@@ -44,10 +44,10 @@ const DEMO_COLUMNS: DataColumnDef[] = [
     type: 'enum',
     width: 130,
     enumOptions: [
-      { label: 'TODO', value: 'TODO', color: '#f1f5f9' },
-      { label: 'IN_PROGRESS', value: 'IN_PROGRESS', color: '#dbeafe' },
-      { label: 'IN_REVIEW', value: 'IN_REVIEW', color: '#fef3c7' },
-      { label: 'DONE', value: 'DONE', color: '#dcfce7' },
+      { label: 'TODO', value: 'TODO', color: 'var(--muted-foreground)' },
+      { label: 'IN_PROGRESS', value: 'IN_PROGRESS', color: 'var(--info)' },
+      { label: 'IN_REVIEW', value: 'IN_REVIEW', color: 'var(--warning)' },
+      { label: 'DONE', value: 'DONE', color: 'var(--success)' },
     ],
     groupable: true,
   },
@@ -57,10 +57,10 @@ const DEMO_COLUMNS: DataColumnDef[] = [
     type: 'enum',
     width: 110,
     enumOptions: [
-      { label: 'LOW', value: 'LOW', color: '#f3f4f6' },
-      { label: 'MEDIUM', value: 'MEDIUM', color: '#e0e7ff' },
-      { label: 'HIGH', value: 'HIGH', color: '#ffedd5' },
-      { label: 'CRITICAL', value: 'CRITICAL', color: '#fee2e2' },
+      { label: 'LOW', value: 'LOW', color: 'var(--muted-foreground)' },
+      { label: 'MEDIUM', value: 'MEDIUM', color: 'var(--info)' },
+      { label: 'HIGH', value: 'HIGH', color: 'var(--warning)' },
+      { label: 'CRITICAL', value: 'CRITICAL', color: 'var(--destructive)' },
     ],
     groupable: true,
   },
@@ -70,13 +70,13 @@ const DEMO_COLUMNS: DataColumnDef[] = [
     type: 'enum',
     width: 90,
     enumOptions: [
-      { label: 'P0', value: 'P0', color: '#fee2e2' },
-      { label: 'P1', value: 'P1', color: '#ffedd5' },
-      { label: 'P2', value: 'P2', color: '#fef3c7' },
-      { label: 'Bug', value: 'Bug', color: '#ffe4e6' },
-      { label: '需求', value: '需求', color: '#dbeafe' },
-      { label: '优化', value: '优化', color: '#d1fae5' },
-      { label: '技术债', value: '技术债', color: '#f3f4f6' },
+      { label: 'P0', value: 'P0', color: 'var(--destructive)' },
+      { label: 'P1', value: 'P1', color: 'var(--warning)' },
+      { label: 'P2', value: 'P2', color: 'var(--info)' },
+      { label: 'Bug', value: 'Bug', color: 'var(--destructive)' },
+      { label: '需求', value: '需求', color: 'var(--chart-1)' },
+      { label: '优化', value: '优化', color: 'var(--success)' },
+      { label: '技术债', value: '技术债', color: 'var(--muted-foreground)' },
     ],
     groupable: true,
   },
@@ -89,8 +89,8 @@ const DEMO_COLUMNS: DataColumnDef[] = [
     numberFormat: { decimals: 0, suffix: '%' },
     highlight: (val) => {
       const n = Number(val);
-      if (n <= 20) return '#fef2f2';
-      if (n >= 80) return '#f0fdf4';
+      if (n <= 20) return 'var(--destructive)';
+      if (n >= 80) return 'var(--success)';
       return null;
     },
   },
@@ -152,23 +152,23 @@ export default function App() {
     <div className="flex flex-col h-screen overflow-hidden bg-background">
       <header className="h-14 bg-card border-b px-6 flex items-center justify-between shrink-0 shadow-sm">
         <h1 className="text-lg font-bold">Collaborative DataTable Demo</h1>
-        <div className="flex items-center gap-3">
-          <span className="text-sm font-medium text-muted-foreground">身份:</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mr-1">Identity</span>
           <select
             value={currentUser.id}
             onChange={(e) => setCurrentUser(MOCK_USERS.find(u => u.id === e.target.value) || MOCK_USERS[0])}
-            className="border rounded-md px-3 py-1.5 text-sm bg-card outline-none focus:ring-2 focus:ring-ring"
+            className="border-0 rounded px-2 py-1 h-7 text-xs font-medium bg-muted/50 hover:bg-muted outline-none focus:ring-1 focus:ring-primary transition-colors cursor-pointer"
           >
             {MOCK_USERS.map(u => (
               <option key={u.id} value={u.id}>{u.name}</option>
             ))}
           </select>
-          <div className="w-5 h-5 rounded-full border shadow-inner" style={{ backgroundColor: currentUser.color }} />
+          <div className="w-4 h-4 rounded-full border border-border/50 shadow-inner ml-1" style={{ backgroundColor: currentUser.color }} />
         </div>
       </header>
 
       <main className="flex-1 overflow-hidden p-4">
-        <div className="bg-card rounded-xl shadow-lg h-full flex flex-col overflow-hidden border">
+        <div className="bg-card rounded-lg h-full flex flex-col overflow-hidden border">
           <CollaborativeTable room={room} currentUser={currentUser} columns={DEMO_COLUMNS} />
         </div>
       </main>

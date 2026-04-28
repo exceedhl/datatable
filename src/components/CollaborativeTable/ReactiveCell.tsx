@@ -115,7 +115,11 @@ export function ReactiveCell({ getValue, row, column, table }: any) {
       className={`relative w-full h-full min-h-[36px] flex items-center px-3 py-1 cursor-pointer select-none transition-colors duration-100 ${borderClass}`}
       style={{
         ...(hasExternalCursor && !isSelected ? { '--tw-ring-color': primaryCursor.color } as any : {}),
-        ...(highlightColor ? { backgroundColor: highlightColor } : {}),
+        ...(highlightColor ? (
+            highlightColor.startsWith('var(') 
+            ? { backgroundColor: `oklch(${highlightColor} / 0.15)`, color: `oklch(${highlightColor})`, fontWeight: 500 }
+            : { backgroundColor: highlightColor }
+        ) : {}),
       }}
       onClick={onClick}
       onDoubleClick={onDoubleClick}
@@ -155,12 +159,12 @@ export function ReactiveCell({ getValue, row, column, table }: any) {
         colType === 'enum' ? (() => {
           const opt = colDef?.enumOptions?.find(o => o.value === value);
           return opt ? (
-            <Badge variant="secondary" className="text-[11px] font-medium" style={opt.color ? { backgroundColor: opt.color, color: parseInt(opt.color.slice(1), 16) < 0x888888 ? '#fff' : '#1e293b' } : {}}>
+            <Badge variant="secondary" className="text-[10px] font-bold tracking-widest uppercase px-1.5 py-0 border-0" style={(opt.color && opt.color.startsWith('var(')) ? { backgroundColor: `oklch(${opt.color} / 0.15)`, color: `oklch(${opt.color})` } : {}}>
               {opt.label}
             </Badge>
           ) : <span className="text-sm text-muted-foreground truncate">{value}</span>;
         })() : colDef?.formula ? (
-          <span className="truncate text-sm text-indigo-600">{displayValue}</span>
+          <span className="truncate text-sm text-primary font-medium">{displayValue}</span>
         ) : colType === 'number' ? (
           <span className="truncate text-sm tabular-nums">{displayValue}</span>
         ) : colType === 'date' ? (
